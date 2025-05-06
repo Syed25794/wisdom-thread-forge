@@ -26,7 +26,7 @@ export async function getThreads(options: {
   const { limit = 10, sortBy = 'newest', tag } = options;
   
   let query = supabase
-    .from('threads')
+    .from('threads' as any)
     .select(`
       *,
       author:profiles(username, avatar_url, full_name)
@@ -56,7 +56,7 @@ export async function getThreads(options: {
 
 export async function getThreadById(id: string) {
   const { data, error } = await supabase
-    .from('threads')
+    .from('threads' as any)
     .select(`
       *,
       author:profiles(username, avatar_url, full_name)
@@ -81,13 +81,13 @@ export async function createThread(
   }
   
   const { data, error } = await supabase
-    .from('threads')
+    .from('threads' as any)
     .insert({
       title: thread.title,
       content: thread.content,
       tags: thread.tags,
       author_id: userData.user.id,
-    })
+    } as any)
     .select()
     .single();
   
@@ -106,11 +106,11 @@ export async function bookmarkThread(threadId: string) {
   }
   
   const { error } = await supabase
-    .from('bookmarks')
+    .from('bookmarks' as any)
     .insert({
       thread_id: threadId,
       user_id: userData.user.id,
-    });
+    } as any);
   
   if (error) {
     if (error.code === '23505') {
@@ -131,12 +131,12 @@ export async function unbookmarkThread(threadId: string) {
   }
   
   const { error } = await supabase
-    .from('bookmarks')
+    .from('bookmarks' as any)
     .delete()
     .match({
       thread_id: threadId,
       user_id: userData.user.id,
-    });
+    } as any);
   
   if (error) {
     throw new Error(error.message);
@@ -153,12 +153,12 @@ export async function isThreadBookmarked(threadId: string) {
   }
   
   const { data, error } = await supabase
-    .from('bookmarks')
+    .from('bookmarks' as any)
     .select('id')
     .match({
       thread_id: threadId,
       user_id: userData.user.id,
-    });
+    } as any);
   
   if (error) {
     throw new Error(error.message);
