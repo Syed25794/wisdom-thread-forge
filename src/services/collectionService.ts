@@ -18,10 +18,10 @@ export async function getUserCollections() {
     throw new Error('You must be signed in to view your collections');
   }
   
-  // Use type assertion to work around type limitations
-  const { data, error } = await (supabase
-    .from('collections')
-    .select() as any)
+  // Using 'any' type to overcome type checking limitations
+  const { data, error } = await supabase
+    .from('collections' as any)
+    .select('*')
     .eq('user_id', userData.user.id)
     .order('created_at', { ascending: false });
   
@@ -39,15 +39,15 @@ export async function createCollection(collection: Pick<Collection, 'name' | 'de
     throw new Error('You must be signed in to create a collection');
   }
   
-  // Use type assertion to work around type limitations
-  const { data, error } = await (supabase
-    .from('collections')
+  // Using 'any' type to overcome type checking limitations
+  const { data, error } = await supabase
+    .from('collections' as any)
     .insert({
       name: collection.name,
       description: collection.description,
       is_private: collection.is_private,
       user_id: userData.user.id,
-    }) as any)
+    } as any)
     .select()
     .single();
   
@@ -66,9 +66,9 @@ export async function addThreadToCollection(collectionId: string, threadId: stri
   }
   
   // First check if user owns the collection
-  const { data: collectionData, error: collectionError } = await (supabase
-    .from('collections')
-    .select() as any)
+  const { data: collectionData, error: collectionError } = await supabase
+    .from('collections' as any)
+    .select()
     .eq('id', collectionId)
     .eq('user_id', userData.user.id)
     .single();
@@ -77,12 +77,12 @@ export async function addThreadToCollection(collectionId: string, threadId: stri
     throw new Error('Collection not found or you do not have permission to modify it');
   }
   
-  const { error } = await (supabase
-    .from('collection_threads')
+  const { error } = await supabase
+    .from('collection_threads' as any)
     .insert({
       collection_id: collectionId,
       thread_id: threadId,
-    }) as any);
+    } as any);
   
   if (error) {
     if (error.code === '23505') {
@@ -102,13 +102,13 @@ export async function removeThreadFromCollection(collectionId: string, threadId:
     throw new Error('You must be signed in to remove a thread from a collection');
   }
   
-  const { error } = await (supabase
-    .from('collection_threads')
-    .delete() as any)
+  const { error } = await supabase
+    .from('collection_threads' as any)
+    .delete()
     .match({
       collection_id: collectionId,
       thread_id: threadId,
-    });
+    } as any);
   
   if (error) {
     throw new Error(error.message);
@@ -118,15 +118,15 @@ export async function removeThreadFromCollection(collectionId: string, threadId:
 }
 
 export async function getCollectionThreads(collectionId: string) {
-  const { data, error } = await (supabase
-    .from('collection_threads')
+  const { data, error } = await supabase
+    .from('collection_threads' as any)
     .select(`
       thread_id,
       threads:thread_id(
         *,
         author:profiles(username, avatar_url, full_name)
       )
-    `) as any)
+    `)
     .eq('collection_id', collectionId);
   
   if (error) {
