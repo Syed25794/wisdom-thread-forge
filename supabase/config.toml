@@ -1,1 +1,5 @@
+
 project_id = "ehxpcasdwxbpwxbtovgw"
+
+[functions.create-upload-url]
+verify_jwt = true
