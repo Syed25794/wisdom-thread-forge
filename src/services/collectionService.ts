@@ -29,7 +29,7 @@ export async function getUserCollections() {
     throw new Error(error.message);
   }
   
-  return data as Collection[];
+  return (data as unknown) as Collection[];
 }
 
 export async function createCollection(collection: Pick<Collection, 'name' | 'description' | 'is_private'>) {
@@ -55,7 +55,7 @@ export async function createCollection(collection: Pick<Collection, 'name' | 'de
     throw new Error(error.message);
   }
   
-  return data as Collection;
+  return (data as unknown) as Collection;
 }
 
 export async function addThreadToCollection(collectionId: string, threadId: string) {
@@ -133,5 +133,5 @@ export async function getCollectionThreads(collectionId: string) {
     throw new Error(error.message);
   }
   
-  return data.map((item: any) => item.threads);
+  return (data.map((item: any) => item.threads) as unknown[]) as any[];
 }

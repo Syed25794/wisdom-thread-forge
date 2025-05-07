@@ -51,7 +51,7 @@ export async function getThreads(options: {
     throw new Error(error.message);
   }
   
-  return data as Thread[];
+  return (data as unknown) as Thread[];
 }
 
 export async function getThreadById(id: string) {
@@ -68,7 +68,7 @@ export async function getThreadById(id: string) {
     throw new Error(error.message);
   }
   
-  return data as Thread;
+  return (data as unknown) as Thread;
 }
 
 export async function createThread(
@@ -95,7 +95,7 @@ export async function createThread(
     throw new Error(error.message);
   }
   
-  return data as Thread;
+  return (data as unknown) as Thread;
 }
 
 export async function bookmarkThread(threadId: string) {
